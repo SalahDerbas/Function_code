@@ -1,0 +1,13 @@
+        $files = $request->urls;
+        if($files)
+        {
+            foreach ($files as $file)
+            {
+                $file_replace = str_replace('https://fix-press.com/public','',$file);
+                $path = public_path().$file_replace;
+                
+                     if(File::exists($path)) {  File::delete($path);    }
+                     
+                DB::table('gallery')->where(['image'=>$file])->delete();
+            }
+        }

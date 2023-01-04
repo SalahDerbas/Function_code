@@ -1,0 +1,15 @@
+                if($request->hasFile('gallery_files')){
+                              foreach ($request->file('gallery_files') as $file) {
+                                  $fileNameWithExt = $file->getClientOriginalName();
+                                  $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
+                                  $extension = $file->getClientOriginalExtension();
+                                  $fileNameToStore = $fileName.'_'.time().'.'.$extension;
+                                  $file->move(base_path().'/public/Gallery/BusinessDirectory/', $fileNameToStore);
+                                  $path = "https://fix-press.com/public/Gallery/BusinessDirectory/".$fileNameToStore;
+                                  DB::table('gallery')->insert([
+                                      'user_id'=>$request->user()->id,
+                                      'user_type'=>$request->user_type,
+                                      'image'=>$path,
+                                      ]);
+                                }
+                            }    

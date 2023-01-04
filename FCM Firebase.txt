@@ -1,0 +1,46 @@
+        $SERVER_API_KEY ="AAAAZXKk104:APA91bEE48XhdyOIAPs7MEEoxLqy6ip4C75-O8TMolyccaO157XBMe2CJLUDG-LqTEJlooqawTAug3Xd8d9VyqYjB5dr_H622i_HIe54MaCxZ3BbKtwbZYAYmUdeskRqciFcNr49slQO";
+    
+        $data = [
+            "registration_ids" => $firebaseToken,
+            "notification" => [
+                "title" =>$title,
+                "body" => $body,  
+                "sound" =>"default",  
+            ],  "data" => [
+                "type_user" =>$type_user,  
+                "type" =>$type,  
+                "image" =>$image,  
+            ]
+
+        ];
+        $dataString = json_encode($data);
+        
+        
+        DB::table('customer_notifications')->insert([
+            'customer_id' => auth()->user()->id,
+            'title'       => $title,
+            'description' => $body ,
+            'read_status' => 0 ,
+            'super_admin_read_status' => 0,
+            'user_type' => $type_user,
+            ]);
+            
+            
+        $headers = [
+            'Authorization: key=' . $SERVER_API_KEY,
+            'Content-Type: application/json',
+        ];
+
+        foreach ($firebaseToken as $key => $firebaseToken) {
+
+        $ch = curl_init();
+        
+        curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
+                 
+        $response = json_decode(curl_exec($ch));
+        return $response;

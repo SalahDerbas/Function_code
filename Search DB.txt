@@ -1,0 +1,9 @@
+          $searchQuery = trim($request->field);
+          $requestDataProduct = ['product_name','description'];
+
+            $products = Product::where(function ($q) use ($requestDataProduct, $searchQuery) {
+                foreach ($requestDataProduct as $field)
+                    $q->orWhere($field, 'like', "%{$searchQuery}%");
+            })->get();
+          
+          return $products ; 

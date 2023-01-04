@@ -1,0 +1,4 @@
+                    $gallery = DB::table('gallery')->where(['user_id'=>$userID , 'user_type'=>$userType])->get();
+                    $gal     = array();
+                    foreach ($gallery as $g)
+                    {   array_push($gal   , $g->image   );   }

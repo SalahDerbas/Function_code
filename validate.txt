@@ -1,0 +1,11 @@
+            $request->validate([
+                'code' => ['required', 'numeric', 'digits:6'],
+                'email' => ['required', 'string', 'max:255', 'unique:users,email', 'check_unique_phone'],
+                'first_name' => 'required',
+                'code' => ['required', 'numeric', 'digits:6'],
+                'file' => ['required','mimes:xls,xlsx,csv,txt','max:2048'],
+
+            ]);
+
+
+

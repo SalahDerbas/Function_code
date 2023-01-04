@@ -1,0 +1,9 @@
+            if($request->file('registeration_pdf'))
+            {
+                        $destinationPath = 'public/registeration_pdf/file/';
+                        $files = $request->file('registeration_pdf'); 
+                        $file_name = $files->getClientOriginalName(); 
+                        $files->move($destinationPath , $file_name); 
+                        $path = "https://fix-press.com/";
+                        $registeration_pdf = $path.$destinationPath.$file_name;
+            }
