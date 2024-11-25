@@ -1,0 +1,98 @@
+step 1 : 
+
+composer require christhompsontldr/laravel-exponent-push-notifications
+============================================================================================
+step 2 : 
+
+php artisan vendor:publish --provider="ExponentPhpSDK\ExpoServiceProvider"
+============================================================================================
+step 3 : 
+
+in .env : 
+EXPO_PUSH_NOTIFICATION_KEY="your_expo_push_notification_key"
+EXPO_PUSH_NOTIFICATION_URL="https://exp.host/--/api/v2/push/send"
+============================================================================================
+step 4 : 
+
+in route : 
+Route::get('/send-notification', 'NotificationController@sendNotification');
+===========================================================================================
+step 5 : 
+
+function is :
+
+use Illuminate\Http\Request;
+use ExponentPhpSDK\Expo;
+
+public function sendNotification(Request $request)
+    {
+        // Create a new Expo instance
+        $expo = new Expo();
+        
+        // Define your notification data
+        $notification = ['title' => 'Hello', 'body' => 'This is a notification'];
+        
+        // Send a notification to a specific user
+        $expo->notify('ExponentPushToken[your_token_here]', $notification);
+        
+        // Return a response
+        return response()->json(['message' => 'Notification sent successfully']);
+    }
+
+============================================================================================
+step 6 :  
+
+in User Model: add this function 
+
+
+
+    public function expoPushToken($token = null)
+    {
+        if ($token !== null) {
+            // Update the Expo push token for the user
+            $this->update(['expo_push_token' => $token]);
+        }
+
+        return $this->expo_push_token;
+    }
+	
+	
+	and in login function : 
+	
+	$user->expoPushToken($request->input('expo_push_token'));
+
+
+
+
+
+
+
+============================================================================================
+
+and this is function for Http : 
+
+
+
+
+
+use ExponentPhpSDK\Expo;
+use Illuminate\Support\Facades\Http;
+
+// Initialize Expo SDK with the push notification key
+$expo = new Expo(getenv('EXPO_PUSH_NOTIFICATION_KEY'));
+
+// Define notification data
+$notification = ['title' => 'Hello', 'body' => 'This is a notification'];
+
+// Send a notification to a specific user
+$response = Http::post(getenv('EXPO_PUSH_NOTIFICATION_URL'), [
+    'headers' => [
+        'Accept' => 'application/json',
+        'Content-Type' => 'application/json',
+    ],
+    'json' => [
+        'to' => 'ExponentPushToken[your_token_here]',
+        'title' => $notification['title'],
+        'body' => $notification['body'],
+    ],
+]);
